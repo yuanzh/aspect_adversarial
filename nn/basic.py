@@ -180,48 +180,6 @@ class Layer(object):
         self.W.set_value(param_list[0].get_value())
         if self.has_bias: self.b.set_value(param_list[1].get_value())
 
-class BNLayer(Layer):
-    '''
-        Batch normalization layer
-        Inputs
-        ------
-        n_in            : input dimension
-        n_out           : hidden dimension
-        activation      : the non-linear function to apply
-    '''
-    def __init__(self, n_in, n_out, activation,
-                            clip_gradients=False,
-                            init_zero=False):
-        super(BNLayer, self).__init__(
-                n_in, n_out, activation,
-                has_bias=False,
-                clip_gradients = clip_gradients,
-                init_zero=init_zero,
-            )
-        # (mini_batch_size, # features)
-        self.BNLayer = BatchNormalization((None, n_out), mode=0)
-
-    def forward(self, x):
-        return self.activation(
-                self.BNLayer.get_result(T.dot(x, self.W))
-            )
-
-    def set_runmode(self, run_mode) :
-        self.BNLayer.set_runmode(run_mode) 
-
-    def get_updates(self):
-        return self.BNLayer.updates
-
-    @property
-    def params(self):
-        return [ self.W ] + self.BNLayer.params
-
-    @params.setter
-    def params(self, param_list):
-        raise Exception()
-        self.W.set_value(param_list[0].get_value())
-        if self.has_bias: self.b.set_value(param_list[1].get_value())
-
 class RecurrentLayer(Layer):
     '''
         Basic recurrent layer -- h_t = f(Wx + W'h_{t-1} + b)
@@ -570,7 +528,7 @@ class LeCNN(Layer):
             order       : feature filter width
     '''
     def __init__(self, n_in, n_out, activation=tanh,
-            order=1, clip_gradients=False, BN=0):
+            order=1, clip_gradients=False, BN=False):
 
         self.n_in = n_in
         self.n_out = n_out
@@ -583,19 +541,19 @@ class LeCNN(Layer):
         # out, in, row, col
         self.filter_shape = (n_out, n_in, 1, order)
         self.W = create_shared(random_init(self.filter_shape), name="W")
-        if BN == 0:
+        if not BN:
             self.bias = create_shared(random_init((n_out,)), name="bias")
         
         self.BNLayer = None
         self.BN = BN
-        if BN > 0:
+        if BN:
             # calculate appropriate input_shape, (mini_batch_size, # of channel, # row, # column)
             new_shape = list(self.input_shape)
             new_shape[1] = self.filter_shape[0]
             new_shape = tuple(new_shape)
-            self.BNLayers = [BatchNormalization(new_shape, mode=1) for _ in xrange(BN)]
+            self.BNLayer = BatchNormalization(new_shape, mode=1)
 
-    def forward_all(self, x, domain=-1, create_updates=True, pad=None):
+    def forward_all(self, x, create_updates=True):
 
         # x is len*batch*d, xs is batch*d*1*len
         xs = x.dimshuffle((1,2,'x',0))
@@ -609,9 +567,8 @@ class LeCNN(Layer):
                 filter_shape = self.filter_shape,
                 border_mode = 'half'
         )
-        if self.BN > 0:
-            assert domain >= 0
-            conv_out = self.BNLayers[domain].get_result(conv_out, create_updates)
+        if self.BN:
+            conv_out = self.BNLayer.get_result(conv_out, create_updates)
         else:
             conv_out = conv_out + self.bias.dimshuffle(('x',0,'x','x'))
         conv_out = self.activation(conv_out)
@@ -623,25 +580,22 @@ class LeCNN(Layer):
         return h.dimshuffle((2,0,1))
 
     def set_runmode(self, run_mode) :
-        if self.BN > 0:
-            for BNLayer in self.BNLayers:
-                BNLayer.set_runmode(run_mode)
+        if self.BN:
+            self.BNLayer.set_runmode(run_mode)
             
     def get_updates(self):
-        if self.BN > 0:
+        if self.BN:
             updates = []
-            for BNLayer in self.BNLayers:
-                updates += BNLayer.updates
+            updates += self.BNLayer.updates
             return updates
         else:
             return []
 
     @property
     def params(self):
-        if self.BN > 0:
+        if self.BN:
             params = [ self.W ]
-            for BNLayer in self.BNLayers:
-                params += BNLayer.params
+            params += self.BNLayer.params
         else:
             params = [ self.W, self.bias ]
         return params 
