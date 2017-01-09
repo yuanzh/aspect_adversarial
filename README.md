@@ -4,7 +4,8 @@
 
 ### Structures
   - /nn: source code of NN library based on this [repo](https://github.com/taolei87/rcnn/tree/master/code/nn)
-  - /synthectic: 
+  - /word2vec: word2vec (from [here](https://code.google.com/archive/p/word2vec/)) for training word embeddings
+  - /synthectic: source code for generating and training models on synthetic data
 
 -------
 ### Dependencies
@@ -13,5 +14,5 @@
 -------
 
 ### To-do
-  - [ ] source code for generating synthectic data
-  - [ ] source code for training model on the synthectic data
+  - [ ] documentation for generating synthectic data and training the model
+  - [ ] source code for the review dataset
