@@ -222,7 +222,6 @@ def generate_doc(gold_aspect, domain, mode):
                 lab = POS_LAB if np.random.rand() < positive_ratio else NEG_LAB
                 if mode == 0:
                     sent = generate_sent_wo_polarity(aspect, lab, domain)
-                    #sent = generate_sent(aspect, gold_aspect, lab, domain)
                 elif mode == 1:
                     if lab == NEG_LAB:
                         sent = generate_sent_wo_common_polarity(aspect, gold_aspect, lab, domain)

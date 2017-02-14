@@ -89,7 +89,7 @@ class Model(object):
         n_d = self.n_d
         n_e = self.n_e
         len_sentence, len_document, batch = idxs.shape
-        dw = theano.shared(np.float64(args.dw).astype(theano.config.floatX))
+        dw = theano.shared(np.float64(0.4).astype(theano.config.floatX))
 
         # (len(sent)*len(doc)*batch)*n_e
         sent_input_flat = embedding_layer.forward(idxs.ravel())
@@ -691,10 +691,6 @@ if __name__ == '__main__':
     argparser.add_argument("--rho",
             type = float,
             default = 1.0
-        )
-    argparser.add_argument("--dw",
-            type = float,
-            default = 0.4
         )
     argparser.add_argument("--learning",
             type = str,
