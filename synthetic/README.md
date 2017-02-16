@@ -59,3 +59,7 @@ To distinguish aspect names and polarity words from others, we surround each of 
 
 ### Result
 The adversarial model should be able to perform almost perfectly (100% accuracy) on all the four synthetic datasets. Sometimes the model will fail due to the randomness in word2vec. Rerun the data generator or word2vec in this case.
+
+### Todo
+  - [ ] add the support for using labeled data in the target domain
+  - [ ] better documentation of the code
