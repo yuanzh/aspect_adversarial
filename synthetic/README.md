@@ -32,7 +32,7 @@ python cnn_rel_adv_syn.py                                # model implementation
       --dev=data/syn0.dev                                # path to development set (required)
       --test=data/syn0.test                              # path to testing set (required)
       --batch=64                                         # minibatch size
-      --rho=0.5                                          # strength of adversarial training
+      --rho=1.0                                          # strength of adversarial training
 ```
 Use ``python cnn_rel_adv_syn.py --help`` to see more options.
 
