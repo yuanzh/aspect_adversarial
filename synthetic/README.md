@@ -5,17 +5,14 @@ This directory contains the implementation of (1) generating random synthetic da
 
 The current implementation can generate four synthetic datasets that represent different challenges in domain adaptation. See [Synthetic Data](#synthetic-data) section for details of the datasets.
 
-<br>
 ### Files
   - [data/generator.py](data/generator.py) generates different synthetic data.
   - [cnn_rel_adv_syn.py](cnn_rel_adv_syn.py) implements the aspect-augmented adversarial model for the synthetic data.
 
-<br>
 ### Code Usage
 
 #### Step 1: Generating the synthetic data
 
-<br>
 ### Synthetic Data
 Synthetic datasets as follows are generated as follows.
 
@@ -34,5 +31,4 @@ The adaptation task is to transfer the model from one aspect to another. The cha
 
 To distinguish aspect names and polarity words from others, we surround each of them with a different distribution of context words. We fill in the rest place of sentences with other random words. See generated files for examples.
 
-<br>
 ### Result
