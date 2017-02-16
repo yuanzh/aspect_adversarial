@@ -642,7 +642,7 @@ if __name__ == '__main__':
         )
     argparser.add_argument("--batch",
             type = int,
-            default = 8
+            default = 64
         )
     argparser.add_argument("--epochs",
             type = int,
