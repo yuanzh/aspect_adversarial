@@ -58,3 +58,4 @@ The adaptation task is to transfer the model from one aspect to another. The cha
 To distinguish aspect names and polarity words from others, we surround each of them with a different distribution of context words. We fill in the rest place of sentences with other random words. See generated files for examples.
 
 ### Result
+The adversarial model should be able to perform almost perfectly (100% accuracy) on all the four synthetic datasets. Sometimes the model will fail due to the randomness in word2vec. Rerun the data generator or word2vec in this case.
