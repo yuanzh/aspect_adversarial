@@ -10,8 +10,34 @@ The current implementation can generate four synthetic datasets that represent d
   - [cnn_rel_adv_syn.py](cnn_rel_adv_syn.py) implements the aspect-augmented adversarial model for the synthetic data.
 
 ### Code Usage
+First, clone the repo and make sure Numpy and Theano are installed. Next, follow the instructions below.
 
 #### Step 1: Generating the synthetic data
+Example run.
+```
+export THEANO_FLAGS='device=gpu,floatX=float32'     # use GPU and 32-bit float
+python data/generator.py                            # synthetic data generator
+      --mode=0                                      # which dataset to generate (required, 0 to 3)
+```
+It will automatically generate the data in the [data](data) directory and then run word2vec to generate word embeddings.
+
+#### Step 2: Run the adversarial model on the synthtic data
+Assume that we generate the data with ``mode=0``, we can run the model as follows:
+```
+python cnn_rel_adv_syn.py                                # model implementation 
+      --source_train=data/syn0.source.train              # path to source training set (required)
+      --source_unlabel=data/syn0.source.ul               # path to source unlabeled set (required)
+      --target_unlabel=data/syn0.target.ul               # path to target unlabeled set (required)
+      --embeddings=data/syn0.emb.100                     # path to word embeddings (required)
+      --dev=data/syn0.dev                                # path to development set (required)
+      --test=data/syn0.test                              # path to testing set (required)
+      --batch=64                                         # minibatch size
+      --rho=0.5                                          # strength of adversarial training
+```
+Use ``python cnn_rel_adv_syn.py --help`` to see more options.
+
+#### (Optional) Step 3: Run the model without adversarial training
+Simply set ``rho=0.0`` and the model will train without the adversarial component.
 
 ### Synthetic Data
 Synthetic datasets as follows are generated as follows.
